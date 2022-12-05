@@ -13,9 +13,7 @@ export default function useSocket(roomJoin: string) {
 
   useEffect(() => {
     api.get('/socket').then(() => {
-      const socket: SocketIO = io({
-        transports: ['websocket'],
-      });
+      const socket: SocketIO = io();
       socket.on('connect', () => {
         socket.emit('roomJoin', roomJoin);
         setSocket(socket);
