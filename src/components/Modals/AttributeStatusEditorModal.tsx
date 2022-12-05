@@ -8,77 +8,79 @@ import FormSelect from 'react-bootstrap/FormSelect';
 import SheetModal from './SheetModal';
 
 type ModalProps = EditorModalProps<AttributeStatus> & {
-	attributes: Attribute[];
+  attributes: Attribute[];
 };
 
 export default function AttributeStatusEditorModal(props: ModalProps) {
-	const initialState: AttributeStatus = {
-		id: 0,
-		name: '',
-		attribute_id: props.attributes[0]?.id || 0,
-	};
+  const initialState: AttributeStatus = {
+    id: 0,
+    name: '',
+    attribute_id: props.attributes[0]?.id || 0,
+  };
 
-	const [attributeStatus, setAttributeStatus] = useState(initialState);
+  const [attributeStatus, setAttributeStatus] = useState(initialState);
 
-	useEffect(() => {
-		if (!props.data) return;
-		setAttributeStatus(props.data);
-	}, [props.data]);
+  useEffect(() => {
+    if (!props.data) return;
+    setAttributeStatus(props.data);
+  }, [props.data]);
 
-	function hide() {
-		setAttributeStatus(initialState);
-		props.onHide();
-	}
+  function hide() {
+    setAttributeStatus(initialState);
+    props.onHide();
+  }
 
-	return (
-		<SheetModal
-			animation={false}
-			title={
-				props.operation === 'create'
-					? 'Criar Status de Atributo'
-					: 'Editar Status de Atributo'
-			}
-			show={props.show}
-			onHide={hide}
-			applyButton={{
-				name: props.operation === 'create' ? 'Criar' : 'Editar',
-				onApply: () => {
-					props.onSubmit(attributeStatus);
-					hide();
-				},
-				disabled: props.attributes.length === 0 || props.disabled,
-			}}>
-			<Container fluid>
-				<FormGroup controlId='createStatusName' className='mb-3'>
-					<FormLabel>Nome</FormLabel>
-					<FormControl
-						autoFocus
-						className='theme-element'
-						value={attributeStatus.name}
-						onChange={(ev) =>
-							setAttributeStatus((attr) => ({ ...attr, name: ev.target.value }))
-						}
-					/>
-				</FormGroup>
-				<FormGroup controlId='createStatusAttribute' className='mb-3'>
-					<FormLabel>Atributo</FormLabel>
-					<FormSelect
-						className='theme-element'
-						value={attributeStatus.attribute_id}
-						onChange={(ev) =>
-							setAttributeStatus((attr) => ({
-								...attr,
-								attribute_id: parseInt(ev.target.value),
-							}))
-						}>
-						{props.attributes.map((attr) => (
-							<option key={attr.id} value={attr.id}>
-								{attr.name}
-							</option>
-						))}
-					</FormSelect>
-				</FormGroup>
-			</Container>
-		</SheetModal>
-	);
+  return (
+    <SheetModal
+      animation={false}
+      title={
+        props.operation === 'create'
+          ? 'Criar Status de Atributo'
+          : 'Editar Status de Atributo'
+      }
+      show={props.show}
+      onHide={hide}
+      applyButton={{
+        name: props.operation === 'create' ? 'Criar' : 'Editar',
+        onApply: () => {
+          props.onSubmit(attributeStatus);
+          hide();
+        },
+        disabled: props.attributes.length === 0 || props.disabled,
+      }}
+    >
+      <Container fluid>
+        <FormGroup controlId="createStatusName" className="mb-3">
+          <FormLabel>Nome</FormLabel>
+          <FormControl
+            autoFocus
+            className="theme-element"
+            value={attributeStatus.name}
+            onChange={ev =>
+              setAttributeStatus(attr => ({ ...attr, name: ev.target.value }))
+            }
+          />
+        </FormGroup>
+        <FormGroup controlId="createStatusAttribute" className="mb-3">
+          <FormLabel>Atributo</FormLabel>
+          <FormSelect
+            className="theme-element"
+            value={attributeStatus.attribute_id}
+            onChange={ev =>
+              setAttributeStatus(attr => ({
+                ...attr,
+                attribute_id: parseInt(ev.target.value),
+              }))
+            }
+          >
+            {props.attributes.map(attr => (
+              <option key={attr.id} value={attr.id}>
+                {attr.name}
+              </option>
+            ))}
+          </FormSelect>
+        </FormGroup>
+      </Container>
+    </SheetModal>
+  );
 }

@@ -10,7 +10,8 @@
     "build": "prisma migrate deploy & next build",
     "start": "next start -p $PORT",
     "lint": "next lint",
-    "vercel-build": "prisma generate && prisma migrate deploy && next build"
+    "vercel-build": "prisma generate && prisma migrate deploy && next build",
+    "format": "npx prettier src/**/*.{ts,tsx} --write"
   },
   "prisma": {
     "schema": "src/prisma/schema.prisma"
@@ -23,6 +24,7 @@
     "copy-to-clipboard": "^3.3.1",
     "iron-session": "^6.0.5",
     "next": "12.1.0",
+    "prettier": "^2.8.0",
     "prisma": "^4.2.1",
     "react": "17.0.2",
     "react-bootstrap": "^2.1.2",

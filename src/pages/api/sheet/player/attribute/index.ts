@@ -4,52 +4,55 @@ import { sessionAPI } from '../../../../../utils/session';
 import type { NextApiResponseServerIO } from '../../../../../utils/socket';
 
 async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
-	if (req.method !== 'POST') {
-		res.status(401).end();
-		return;
-	}
+  if (req.method !== 'POST') {
+    res.status(401).end();
+    return;
+  }
 
-	const player = req.session.player;
-	const npcId: number | undefined = req.body.npcId;
-	
-	if (!player || (player.admin && !npcId)) {
-		res.status(401).end();
-		return;
-	}
+  const player = req.session.player;
+  const npcId: number | undefined = req.body.npcId;
 
-	const attributeID: number | undefined = parseInt(req.body.id);
+  if (!player || (player.admin && !npcId)) {
+    res.status(401).end();
+    return;
+  }
 
-	if (!attributeID) {
-		res.status(401).send({ message: 'ID do atributo está em branco.' });
-		return;
-	}
+  const attributeID: number | undefined = parseInt(req.body.id);
 
-	const value: number | undefined = req.body.value;
-	const maxValue: number | undefined = req.body.maxValue;
-	const show: boolean | undefined = req.body.show;
+  if (!attributeID) {
+    res.status(401).send({ message: 'ID do atributo está em branco.' });
+    return;
+  }
 
-	const playerId = npcId ? npcId : player.id;
+  const value: number | undefined = req.body.value;
+  const maxValue: number | undefined = req.body.maxValue;
+  const show: boolean | undefined = req.body.show;
 
-	const attr = await prisma.playerAttribute.update({
-		where: {
-			player_id_attribute_id: {
-				player_id: playerId,
-				attribute_id: attributeID,
-			},
-		},
-		data: { value, maxValue, show },
-	});
+  const playerId = npcId ? npcId : player.id;
 
-	res.end();
+  const attr = await prisma.playerAttribute.update({
+    where: {
+      player_id_attribute_id: {
+        player_id: playerId,
+        attribute_id: attributeID,
+      },
+    },
+    data: { value, maxValue, show },
+  });
 
-	res.socket.server.io?.to(`portrait${playerId}`).to('admin').emit(
-		'playerAttributeChange',
-		playerId,
-		attributeID,
-		attr.value,
-		attr.maxValue,
-		attr.show
-	);
+  res.end();
+
+  res.socket.server.io
+    ?.to(`portrait${playerId}`)
+    .to('admin')
+    .emit(
+      'playerAttributeChange',
+      playerId,
+      attributeID,
+      attr.value,
+      attr.maxValue,
+      attr.show
+    );
 }
 
 export default sessionAPI(handler);
